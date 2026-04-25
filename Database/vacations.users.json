@@ -1,0 +1,40 @@
+[{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43d9"
+  },
+  "firstName": "User",
+  "lastName": "User",
+  "email": "user@example.com",
+  "password": "$2b$10$bBISmsyp9IQoCdkGB4qknO9e/L86cHznRo92466TyA8viz45eOVPe",
+  "role": "User"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43da"
+  },
+  "firstName": "Admin",
+  "lastName": "Admin",
+  "email": "admin@example.com",
+  "password": "$2b$10$QlysLxMVhTzp7l/ej4xyuOFFj/nJlTfXJ3VD9W51MMZwDxuskVHky",
+  "role": "Admin"
+},
+{
+  "_id": {
+    "$oid": "69e2a041ba79e0c168074bd5"
+  },
+  "firstName": "Amit",
+  "lastName": "Chupak",
+  "email": "amitchupak1@gmail.com",
+  "password": "$2b$10$FHpjHjbceG7Id5252ZdZKei9vjCxj0gKq6cP1h.E8oFY09YhmNafi",
+  "role": "User"
+},
+{
+  "_id": {
+    "$oid": "69ecb857d875c76693c3ad77"
+  },
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "user@test.com",
+  "password": "$2b$10$oWbJyxX/Taa/um0WW4b9sOq4TtQCKJ8tdoGd8YuL4sADqRy6hA/iy",
+  "role": "User"
+}]

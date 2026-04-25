@@ -1,0 +1,33 @@
+[{
+  "_id": {
+    "$oid": "69e2ac08a5457744c57bbd77"
+  },
+  "userId": {
+    "$oid": "69e167915a30fa47176d43d9"
+  },
+  "vacationId": {
+    "$oid": "69e167915a30fa47176d43dd"
+  }
+},
+{
+  "_id": {
+    "$oid": "69e587db008c1d14eef809d6"
+  },
+  "userId": {
+    "$oid": "69e2a041ba79e0c168074bd5"
+  },
+  "vacationId": {
+    "$oid": "69e167915a30fa47176d43dd"
+  }
+},
+{
+  "_id": {
+    "$oid": "69e587de008c1d14eef809ed"
+  },
+  "userId": {
+    "$oid": "69e2a041ba79e0c168074bd5"
+  },
+  "vacationId": {
+    "$oid": "69e167915a30fa47176d43e3"
+  }
+}]

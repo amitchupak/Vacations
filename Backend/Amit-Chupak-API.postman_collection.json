@@ -1,0 +1,522 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-0001-4000-8000-000000000001",
+    "name": "Vacation",
+    "description": "Postman collection for the Amit Chupak vacations backend.\n\nOne folder per controller, one request per route.\n\n### Variables\n- `base_url` — backend root URL (defaults to `http://localhost:4001`).\n- `token` — bearer token; set automatically by Register / Login.\n- `userId` — id of the logged-in user; set automatically.\n- `vacationId` — id of a vacation; set automatically by Get Vacations / Create Vacation.\n- `email`, `password` — credentials used by Register and Login. Edit these to switch between user and admin.\n\n### Admin endpoints\nThe register route always creates `role: \"User\"`. To exercise admin endpoints (create/update/delete vacation, CSV report), promote a user in MongoDB:\n```js\ndb.users.updateOne({ email: \"admin@test.com\" }, { $set: { role: \"Admin\" } });\n```\nThen set `email` / `password` to those admin credentials and run Login.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:4001", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "userId", "value": "", "type": "string" },
+    { "key": "vacationId", "value": "", "type": "string" },
+    { "key": "email", "value": "user@test.com", "type": "string" },
+    { "key": "password", "value": "User1234!", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1 - Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201 Created', () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test('Response has user and token', () => {",
+                  "  pm.expect(json).to.have.property('token').that.is.a('string');",
+                  "  pm.expect(json).to.have.property('user');",
+                  "});",
+                  "if (json.token) pm.collectionVariables.set('token', json.token);",
+                  "if (json.user && json.user._id) pm.collectionVariables.set('userId', json.user._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Response has user and token', () => {",
+                  "  pm.expect(json).to.have.property('token').that.is.a('string');",
+                  "  pm.expect(json).to.have.property('user');",
+                  "});",
+                  "if (json.token) pm.collectionVariables.set('token', json.token);",
+                  "if (json.user && json.user._id) pm.collectionVariables.set('userId', json.user._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Returns the user record', () => {",
+                  "  pm.expect(json).to.have.property('_id');",
+                  "  pm.expect(json).to.have.property('email');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - Vacations",
+      "item": [
+        {
+          "name": "Get Vacations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "const list = json.vacations || json.data || (Array.isArray(json) ? json : null);",
+                  "if (list && list.length > 0 && !pm.collectionVariables.get('vacationId')) {",
+                  "  pm.collectionVariables.set('vacationId', list[0]._id || list[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/vacations?page=1&limit=9",
+              "host": ["{{base_url}}"],
+              "path": ["api", "vacations"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "9" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Vacations Filtered",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/vacations/filter/all?page=1&limit=9",
+              "host": ["{{base_url}}"],
+              "path": ["api", "vacations", "filter", "all"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "9" }
+              ]
+            },
+            "description": "Filter type can be one of: `liked`, `active`, `upcoming`, `all`."
+          }
+        },
+        {
+          "name": "Get Vacation by Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has destination field', () => pm.expect(json).to.have.property('destination'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/vacations/{{vacationId}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "vacations", "{{vacationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Vacation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 201 Created', () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "if (json && json._id) pm.collectionVariables.set('vacationId', json._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "destination", "value": "Postman Test Destination", "type": "text" },
+                { "key": "description", "value": "Created automatically by the Postman collection.", "type": "text" },
+                { "key": "startDate", "value": "2026-06-01", "type": "text" },
+                { "key": "endDate", "value": "2026-06-10", "type": "text" },
+                { "key": "price", "value": "1499.99", "type": "text" },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Required. Pick any image file from your machine before sending."
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/vacations",
+              "host": ["{{base_url}}"],
+              "path": ["api", "vacations"]
+            },
+            "description": "Admin only. Multipart with an `image` file. Run Login as admin first."
+          }
+        },
+        {
+          "name": "Update Vacation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "destination", "value": "Postman Test (updated)", "type": "text" },
+                { "key": "description", "value": "Updated by the Postman collection.", "type": "text" },
+                { "key": "price", "value": "1599.99", "type": "text" },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Optional. Leave empty to keep the existing image."
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/vacations/{{vacationId}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "vacations", "{{vacationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Vacation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Returns success message', () => pm.expect(json).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/vacations/{{vacationId}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "vacations", "{{vacationId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - Likes",
+      "item": [
+        {
+          "name": "Like Vacation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 or 201', () => pm.expect([200, 201]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/likes/{{vacationId}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "likes", "{{vacationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Like Count",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has numeric count', () => pm.expect(json.count).to.be.a('number'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/likes/count/{{vacationId}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "likes", "count", "{{vacationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Is Vacation Liked",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has boolean isLiked', () => pm.expect(json.isLiked).to.be.a('boolean'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/likes/check/{{vacationId}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "likes", "check", "{{vacationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Unlike Vacation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Returns success message', () => pm.expect(json).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/likes/{{vacationId}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "likes", "{{vacationId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - AI",
+      "item": [
+        {
+          "name": "Get AI Recommendation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has recommendation field', () => pm.expect(json).to.have.property('recommendation'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destination\": \"Tokyo\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ai/recommendation",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ai", "recommendation"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 - MCP",
+      "item": [
+        {
+          "name": "MCP Query",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Has answer field', () => pm.expect(json).to.have.property('answer'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"What are the cheapest upcoming vacations?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/mcp/query",
+              "host": ["{{base_url}}"],
+              "path": ["api", "mcp", "query"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6 - Reports",
+      "item": [
+        {
+          "name": "Get CSV Report",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Content-Type is text/csv', () => {",
+                  "  const ct = pm.response.headers.get('Content-Type') || '';",
+                  "  pm.expect(ct.toLowerCase()).to.include('text/csv');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/reports/csv",
+              "host": ["{{base_url}}"],
+              "path": ["api", "reports", "csv"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

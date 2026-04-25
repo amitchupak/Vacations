@@ -1,0 +1,195 @@
+[{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43dd"
+  },
+  "destination": "Rome",
+  "description": "You can create a dream vac of famous artistic wonders and historic hidden gems punctuated by top-notch dining in fabulous restaurants with a Rome vacation package. Fill your days with tours of the Roman Forum, the Pantheon, the Colosseum, all the show-off Rome sights, then meander down cobbled streets to find a pretty basement.",
+  "startDate": {
+    "$date": "2026-03-28T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-04-11T00:00:00.000Z"
+  },
+  "price": 1931,
+  "imageName": "image-1776558140078-362794045.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43de"
+  },
+  "destination": "Rhodes",
+  "description": "It's time to take a break and enjoy a cocktail by the sea on a Rhodes vacation. Incredible seaside views are there for the taking on a tip to Rhodes. Pefkos Beach (28 miles away) is a well-known example. We recommend staying close by.",
+  "startDate": {
+    "$date": "2026-08-11T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-08-22T00:00:00.000Z"
+  },
+  "price": 462,
+  "imageName": "image-1776651881083-814640015.webp"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43df"
+  },
+  "destination": "Lahaina",
+  "description": "It's time to take a break and relax by the ocean on a Lahaina vacation. Incredible seaside views are in plentiful supply on a trip to Lahaina — Kaanapali Beach (3 miles away) is the perfect example. We recommend staying close by.",
+  "startDate": {
+    "$date": "2026-11-15T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-11-30T00:00:00.000Z"
+  },
+  "price": 1049,
+  "imageName": "image-1776638095721-878560361.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43e0"
+  },
+  "destination": "Corfu",
+  "description": "There's nothing more relaxing than a Corfu vacation. Whether you're treating yourself to sun-soaked beaches or historic sights, Corfu vacations are the perfect way to unwind. Fill your days with tours of the Old Corfu Town, the Paleokastritsa Monastery.",
+  "startDate": {
+    "$date": "2026-12-13T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-12-27T00:00:00.000Z"
+  },
+  "price": 1200,
+  "imageName": "image-1776638105224-292421343.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43e1"
+  },
+  "destination": "Hilo",
+  "description": "There's nothing like a Hilo vacation to put a spring in your step. The exciting sights, the exciting views and the exciting attractions are all waiting for you. Enjoy the local culture.",
+  "startDate": {
+    "$date": "2026-12-17T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-12-31T00:00:00.000Z"
+  },
+  "price": 1600,
+  "imageName": "image-1776638115969-763558675.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43e2"
+  },
+  "destination": "Montego Bay",
+  "description": "Montego Bay vacation packages, you can fly into Sangster International Airport and be on the beach in no time. Shop until you drop at the tourist spots or explore the local culture.",
+  "startDate": {
+    "$date": "2027-01-03T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2027-01-17T00:00:00.000Z"
+  },
+  "price": 850,
+  "imageName": "image-1776638128765-787193686.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43e3"
+  },
+  "destination": "Paris",
+  "description": "Experience the charm and beauty of Paris, the City of Light. Visit the Eiffel Tower, explore the Louvre Museum, stroll through charming neighborhoods, and enjoy world-class cuisine.",
+  "startDate": {
+    "$date": "2026-04-15T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-04-30T00:00:00.000Z"
+  },
+  "price": 2100,
+  "imageName": "image-1776637997308-116847648.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43e4"
+  },
+  "destination": "Barcelona",
+  "description": "Discover the vibrant culture of Barcelona with its unique architecture, beautiful beaches, and delicious food. Visit the Sagrada Familia, Park Güell, and enjoy the Mediterranean coast.",
+  "startDate": {
+    "$date": "2026-05-10T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-05-25T00:00:00.000Z"
+  },
+  "price": 1350,
+  "imageName": "image-1776638010763-725758478.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43e5"
+  },
+  "destination": "Tokyo",
+  "description": "Immerse yourself in the bustling energy of Tokyo. Experience ancient temples, modern skyscrapers, incredible food, and vibrant nightlife. A perfect blend of tradition and innovation.",
+  "startDate": {
+    "$date": "2026-06-01T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-06-15T00:00:00.000Z"
+  },
+  "price": 2500,
+  "imageName": "image-1776638020659-314584608.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43e6"
+  },
+  "destination": "Miami",
+  "description": "Enjoy the sun, sand, and nightlife of Miami. Relax on beautiful beaches, explore the art deco architecture, enjoy water sports, and experience world-class dining and entertainment.",
+  "startDate": {
+    "$date": "2026-07-05T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-07-20T00:00:00.000Z"
+  },
+  "price": 980,
+  "imageName": "image-1776638031533-911920905.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43e7"
+  },
+  "destination": "Amsterdam",
+  "description": "Explore the charming canals, visit world-renowned museums, and experience Dutch culture in Amsterdam. Enjoy cycling through the city and sampling traditional Dutch cuisine.",
+  "startDate": {
+    "$date": "2026-08-01T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-08-15T00:00:00.000Z"
+  },
+  "price": 1450,
+  "imageName": "image-1776638039355-802793676.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e167915a30fa47176d43e8"
+  },
+  "destination": "Bali",
+  "description": "Discover the exotic beauty of Bali with its stunning beaches, lush rice fields, and spiritual temples. Perfect for relaxation, adventure, and cultural exploration.",
+  "startDate": {
+    "$date": "2026-09-10T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-09-25T00:00:00.000Z"
+  },
+  "price": 875,
+  "imageName": "image-1776638083586-663071435.jpg"
+},
+{
+  "_id": {
+    "$oid": "69e55a59fd364d53d2fad2c5"
+  },
+  "destination": "New York",
+  "description": "Discover your perfect getaway with our New Year vacation specials. Whether you're dreaming of snowy mountain escapes, vibrant city celebrations, or relaxing beach retreats, we offer tailored packages to make your holiday unforgettable. Start the year with new adventures, exclusive deals, and memories that will last a lifetime.",
+  "startDate": {
+    "$date": "2026-04-20T00:00:00.000Z"
+  },
+  "endDate": {
+    "$date": "2026-04-29T00:00:00.000Z"
+  },
+  "price": 1200,
+  "imageName": "image-1776638553164-894460908.jpg"
+}]

@@ -1,0 +1,81 @@
+.reports-container {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--page-gradient);
+  min-height: calc(100dvh - 56px);
+}
+
+.reports-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.reports-header h1 {
+  color: #333;
+  margin: 0;
+  font-size: 32px;
+}
+
+.download-csv-btn {
+  padding: 12px 24px;
+  background: #FF9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.download-csv-btn:hover {
+  background-color: #F57C00;
+}
+
+.chart-container {
+  background: var(--color-surface);
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 40px;
+}
+
+.no-data {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 40px;
+}
+
+.report-table thead {
+  background: var(--color-brand);
+  color: white;
+}
+
+.report-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.report-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.report-table tbody tr:hover {
+  background: #f9f9f9;
+}

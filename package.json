@@ -1,0 +1,16 @@
+{
+    "name": "amit-chupak",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Vacations fullstack project (Backend: Express + MongoDB, Frontend: React + Vite).",
+    "scripts": {
+        "build": "npm --prefix Backend run build && npm --prefix Frontend run build",
+        "build:backend": "npm --prefix Backend run build",
+        "build:frontend": "npm --prefix Frontend run build",
+        "start:backend": "npm --prefix Backend start",
+        "start:frontend": "npm --prefix Frontend start",
+        "install:all": "npm --prefix Backend install && npm --prefix Frontend install",
+        "lint:frontend": "npm --prefix Frontend run lint"
+    },
+    "author": "Amit Chupak"
+}
