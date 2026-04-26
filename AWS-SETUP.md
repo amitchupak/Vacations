@@ -27,10 +27,10 @@ nvm use 20
 node -v
 cd ~/Vacations/Frontend
 npm install
-npm start
+npm run start:code-server
 ```
 
-**Easier (no nvm):** use **Docker** from the project root: `docker compose up -d --build` — the project’s Docker image already uses a current Node.
+(Use `npm start` only for local/Docker, not for the `5001/proxy/4002` preview.) **Easier (no nvm):** use **Docker** from the project root: `docker compose up -d --build` — the project’s Docker image already uses a current Node.
 
 ---
 
@@ -104,26 +104,18 @@ npm start
 
 The preview proxy on **5001** only forwards to a process on **port 4002** on the server. You must **start the Vite dev server** in `Frontend` with that port (or use **Docker** so something listens on host **:4002**).
 
-- **Run without Docker (simplest for code-server):** in `Frontend`, uncomment in **`Frontend/.env`**: `VITE_BASE_PATH=/proxy/4002/`, then:
-  ```bash
-  cd Frontend
-  npm install
-  npm start
-  ```
-  Vite will listen on **4002** automatically when `VITE_BASE_PATH` is `/proxy/4002/`.
+- **Run without Docker (simplest for code-server):** in `Frontend` run:
+   ```bash
+   cd ~/Vacations/Frontend
+   npm install
+   npm run start:code-server
+   ```
+   This sets Vite’s **`--base /proxy/4002/`** so you do not get 404 on `client` / `main.tsx`. **Do not** use plain `npm start` for the `/5001/proxy/4002/` URL.
 - **Or use full stack:** from the project root, `docker compose up -d --build` and open **`http://<IP>:5002`**, not the `/proxy/4002/` link.
 
-## Code-server at `http://<IP>:5001/proxy/4002/` (404 on `client`, `main.tsx`)
+## Code-server: 404 on `client`, `main.tsx`, `@react-refresh`
 
-That URL is the **editor’s preview proxy**, not your public site. Vite must know the subpath. In **`Frontend/.env`** on the server add:
-
-```env
-VITE_BASE_PATH=/proxy/4002/
-```
-
-Then restart the frontend (or `npm start` in `Frontend` if you run it by hand). The path must match what is in the address bar (`/proxy/4002/` or whatever port you forward).
-
-**For a normal public / Docker URL, do not** set `VITE_BASE_PATH`. Use **`http://<IP>:5002`** (nginx) or the **trycloudflare.com** link instead — you don’t use `/proxy/4002/` there.
+The preview uses a **subpath** (`/proxy/4002/`). You must start with **`npm run start:code-server`**, not `npm start`. For a public site without that path, use **`http://<IP>:5002`** (Docker) or the **trycloudflare.com** link.
 
 ## Local PC (optional)
 

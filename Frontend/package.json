@@ -8,6 +8,7 @@
     },
     "scripts": {
         "start": "vite",
+        "start:code-server": "vite --base /proxy/4002/",
         "dev": "vite",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
