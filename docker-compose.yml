@@ -119,8 +119,8 @@ services:
   proxy:
     image: nginx:alpine
     container_name: vacations_proxy
+    # Host :80 is often already taken (apache, system). We publish 5002+8080 only. Add 80:80 if free.
     ports:
-      - "80:80"
       - "8080:80"
       - "5002:80"
     volumes:
