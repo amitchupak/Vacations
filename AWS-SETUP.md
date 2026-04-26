@@ -111,6 +111,18 @@ The preview proxy on **5001** only forwards to a process on **port 4002** on the
    npm run start:code-server
    ```
    This sets Vite’s **`--base /proxy/4002/`** so you do not get 404 on `client` / `main.tsx`. **Do not** use plain `npm start` for the `/5001/proxy/4002/` URL.
+
+**`Port 4002 is already in use`:** something else (usually **Docker** `vacations_frontend`) is bound to **4002**. Either free the port, or use another one:
+
+```bash
+# See what is using 4002 (often Docker)
+docker ps | grep 4002
+# Stop the full stack, then run Vite in the host again:
+cd ~/Vacations && docker compose stop
+cd ~/Vacations/Frontend && npm run start:code-server
+```
+
+**Or** keep Docker running and use a different preview port: `npm run start:code-server:4003` and open **`http://<IP>:5001/proxy/4003/`** (not `/proxy/4002/`).
 - **Or use full stack:** from the project root, `docker compose up -d --build` and open **`http://<IP>:5002`**, not the `/proxy/4002/` link.
 
 ## Code-server: 404 on `client`, `main.tsx`, `@react-refresh`

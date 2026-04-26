@@ -8,7 +8,8 @@
     },
     "scripts": {
         "start": "vite",
-        "start:code-server": "vite --base /proxy/4002/",
+        "start:code-server": "vite --base /proxy/4002/ --port 4002",
+        "start:code-server:4003": "vite --base /proxy/4003/ --port 4003",
         "dev": "vite",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
