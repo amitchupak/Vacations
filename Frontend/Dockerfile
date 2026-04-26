@@ -15,6 +15,5 @@ COPY ./Frontend /app
     
 # -------------------------------------------------------------
     
-# When container start - which command will run our app:
-ENTRYPOINT npm start
+CMD ["npm", "start"]
     
