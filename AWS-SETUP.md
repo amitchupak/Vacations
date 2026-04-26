@@ -102,18 +102,13 @@ npm run start:code-server
 
 ## `ECONNREFUSED` on `http://<IP>:5001/proxy/4002/`
 
-The preview on **5001** only forwards to **port 4002** on the server. You must run Vite in `Frontend` with **`npm run start:code-server`** (uses `--base /proxy/4002/` and **port 4002**). The **Docker** frontend is on host **:4003** and uses `base: /` — it does **not** work behind `/proxy/4002/` (you would see **404** on `client`, `@react-refresh`, etc.).
+The preview on **5001** forwards to **port 4002** (or 4003, etc. — the number in `/proxy/PORT/`). You must run Vite with the **matching** script: **`npm run start:code-server`** for `/proxy/4002/`, or **`npm run start:code-server:4003`** for `/proxy/4003/`. The **number must match the port in the path**, and that host port must **not** be the Docker-mapped Vite (compose uses **:4010** so **4002** and **4003** stay free for previews).
 
-- **code-server** (`/proxy/4002/`): `cd ~/Vacations/Frontend && npm run start:code-server` (needs **:4002** free).
-- **Full stack in browser** (no subpath): `http://<IP>:5002` from `docker compose up`, or `http://<IP>:4003` for direct Vite with Docker.
+**If you use `/proxy/4002/` or `/proxy/4003/` but Docker is bound to the same port:** Vite inside Docker has **`base: /`**, not `/proxy/…` — the browser will get **500** or **404** on `client`, `main.tsx`, `@react-refresh`. **Fix:** `git pull` the latest compose, `docker compose up -d --build` (Vite is on **:4010** on the host), then run the matching **`npm run start:code-server`** in `Frontend` for the code-server URL, **or** use **`http://<IP>:5002`** (nginx) for the app.
 
-**`Port 4002 is already in use`:** stop whatever is on 4002, or use `npm run start:code-server:4003` and open **`/proxy/4003/`** instead.
-
-```bash
-sudo ss -tlnp | grep 4002
-# If you no longer need it on 4002, stop it; or pull the latest compose (frontend is on :4003, not :4002).
-cd ~/Vacations/Frontend && npm run start:code-server
-```
+- **code-server** `/proxy/4002/`: `npm run start:code-server` (port **4002** free)
+- **code-server** `/proxy/4003/`: `npm run start:code-server:4003` (port **4003** free)
+- **Full stack in browser (recommended with Docker):** `http://<IP>:5002` or `http://<IP>:4010` (direct Vite on host)
 
 ## If the URL is `/proxy/4002/proxy/4002/` (path appears twice)
 
@@ -129,4 +124,4 @@ The preview uses a **subpath** (`/proxy/4002/`). You must start with **`npm run 
 
 ## Local PC (optional)
 
-- In root **`.env`:** `VITE_API_URL=http://localhost:4001` when you use Docker on your computer with the UI on port **4003** and the API on **4001**.
+- In root **`.env`:** `VITE_API_URL=http://localhost:4001` when you use Docker on your computer with the UI on port **4010** and the API on **4001**.

@@ -99,17 +99,17 @@ services:
       context: .
       dockerfile: ./Frontend/Dockerfile
     container_name: vacations_frontend
-    # Host :4002 is reserved for code-server preview (`npm run start:code-server` → /proxy/4002/).
-    # Use :4003 for direct Vite when Docker is up, or use nginx :5002 for the app.
+    # code-server only: /proxy/4002/ → host :4002, /proxy/4003/ → :4003 (must use matching npm script).
+    # Do not publish the Docker Vite on 4002/4003 or previews 404/500. Direct UI: :4010 or nginx :5002.
     ports:
-      - "4003:4000"
+      - "4010:4000"
     depends_on:
       - backend
     volumes:
       - ./Frontend:/app
       - /app/node_modules
       - /app/dist
-    # VITE_DEV_PORT=4000 inside the container (host :4003 maps to container :4000).
+    # VITE_DEV_PORT=4000 inside the container (host :4010 maps to container :4000).
     # Empty = use browser location (Cloudflare tunnel + local nginx on :5002). For AWS option B, set in root .env.
     environment:
       VITE_API_URL: ${VITE_API_URL:-}

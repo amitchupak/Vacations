@@ -60,7 +60,7 @@ function codeServerStrippedPathPlugin(): Plugin {
 
 // https://vite.dev/config/
 // code-server: http://IP:5001/proxy/4002/ only connects to what listens on 4002. Default 4002 so
-// `npm start` works with no .env. Docker maps host 4003→4000; keep 4002 free for start:code-server.
+// `npm start` works with no .env. Docker maps 4010→4000; keep 4002/4003 for code-server scripts only.
 export default defineConfig(({ mode }): UserConfig => {
     const env = getEnv(mode);
     const base = env.VITE_BASE_PATH
