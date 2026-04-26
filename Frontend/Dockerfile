@@ -15,5 +15,7 @@ COPY ./Frontend /app
     
 # -------------------------------------------------------------
     
+# Always use base "/" in Docker — not the school code-server /proxy/… base.
+ENV VITE_BASE_PATH=""
 CMD ["npm", "start"]
     

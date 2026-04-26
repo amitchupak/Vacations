@@ -114,6 +114,8 @@ services:
     environment:
       VITE_API_URL: ${VITE_API_URL:-}
       VITE_DEV_PORT: "4000"
+      # Force base "/" so any Frontend/.env with VITE_BASE_PATH=/proxy/… on the host is ignored.
+      VITE_BASE_PATH: ""
 
   # Public entry. AWS often blocks 80/8080/40xx/5002. Use cloudflared (below) for a real public URL.
   proxy:
