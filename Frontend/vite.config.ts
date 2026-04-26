@@ -10,6 +10,7 @@ function getEnv(mode: string) {
             key === "VITE_DEV_PORT" ||
             key === "VITE_BASE_PATH" ||
             key === "VITE_API_URL" ||
+            key === "VITE_API_PROXY_TARGET" ||
             key.startsWith("VITE_")
         ) {
             const v = process.env[key];
@@ -79,6 +80,10 @@ export default defineConfig(({ mode }): UserConfig => {
         }
     }
 
+    // Proxy /api and /1-assets to the backend so the browser can use same-origin.
+    // Docker (compose) sets VITE_API_PROXY_TARGET=http://backend:4001; host npm defaults to localhost.
+    const proxyTarget = env.VITE_API_PROXY_TARGET || "http://localhost:4001";
+
     return {
         base,
         plugins: [react(), codeServerStrippedPathPlugin()],
@@ -88,6 +93,10 @@ export default defineConfig(({ mode }): UserConfig => {
             strictPort: true,
             open: false,
             allowedHosts: true,
+            proxy: {
+                "/api": { target: proxyTarget, changeOrigin: true },
+                "/1-assets": { target: proxyTarget, changeOrigin: true },
+            },
         },
     };
 });

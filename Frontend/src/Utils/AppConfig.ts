@@ -1,18 +1,14 @@
-// Base URL: explicit VITE_API_URL, or same origin (nginx + Cloudflare tunnel), or direct Vite on :4002/:4003/:4010 → API :4001.
+// Same-origin by default. Vite dev server proxies /api and /1-assets to the backend
+// (see vite.config.ts), nginx :5002 also forwards /api → backend. So the browser never
+// has to talk to :4001 directly. Use VITE_API_URL only to point at a different host.
 function resolveBaseUrl(): string {
     const fromEnv = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
     if (fromEnv) {
         return fromEnv.replace(/\/$/, "");
     }
     if (typeof window === "undefined") {
-        return "http://localhost:4001";
+        return "";
     }
-    const { protocol, hostname, port } = window.location;
-    // Host :4010 = Docker’s published Vite; :4002 / :4003 = code-server direct or npm dev (see docker-compose).
-    if (port === "4002" || port === "4003" || port === "4010") {
-        return `${protocol}//${hostname}:4001`;
-    }
-    // Nginx, tunnel (trycloudflare.com), or :80 / :5002 — /api is same host.
     return window.location.origin;
 }
 
