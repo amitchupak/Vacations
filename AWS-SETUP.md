@@ -102,28 +102,18 @@ npm run start:code-server
 
 ## `ECONNREFUSED` on `http://<IP>:5001/proxy/4002/`
 
-The preview proxy on **5001** only forwards to a process on **port 4002** on the server. You must **start the Vite dev server** in `Frontend` with that port (or use **Docker** so something listens on host **:4002**).
+The preview on **5001** only forwards to **port 4002** on the server. You must run Vite in `Frontend` with **`npm run start:code-server`** (uses `--base /proxy/4002/` and **port 4002**). The **Docker** frontend is on host **:4003** and uses `base: /` — it does **not** work behind `/proxy/4002/` (you would see **404** on `client`, `@react-refresh`, etc.).
 
-- **Run without Docker (simplest for code-server):** in `Frontend` run:
-   ```bash
-   cd ~/Vacations/Frontend
-   npm install
-   npm run start:code-server
-   ```
-   This sets Vite’s **`--base /proxy/4002/`** so you do not get 404 on `client` / `main.tsx`. **Do not** use plain `npm start` for the `/5001/proxy/4002/` URL.
+- **code-server** (`/proxy/4002/`): `cd ~/Vacations/Frontend && npm run start:code-server` (needs **:4002** free).
+- **Full stack in browser** (no subpath): `http://<IP>:5002` from `docker compose up`, or `http://<IP>:4003` for direct Vite with Docker.
 
-**`Port 4002 is already in use`:** something else (usually **Docker** `vacations_frontend`) is bound to **4002**. Either free the port, or use another one:
+**`Port 4002 is already in use`:** stop whatever is on 4002, or use `npm run start:code-server:4003` and open **`/proxy/4003/`** instead.
 
 ```bash
-# See what is using 4002 (often Docker)
-docker ps | grep 4002
-# Stop the full stack, then run Vite in the host again:
-cd ~/Vacations && docker compose stop
+sudo ss -tlnp | grep 4002
+# If you no longer need it on 4002, stop it; or pull the latest compose (frontend is on :4003, not :4002).
 cd ~/Vacations/Frontend && npm run start:code-server
 ```
-
-**Or** keep Docker running and use a different preview port: `npm run start:code-server:4003` and open **`http://<IP>:5001/proxy/4003/`** (not `/proxy/4002/`).
-- **Or use full stack:** from the project root, `docker compose up -d --build` and open **`http://<IP>:5002`**, not the `/proxy/4002/` link.
 
 ## If the URL is `/proxy/4002/proxy/4002/` (path appears twice)
 
@@ -139,4 +129,4 @@ The preview uses a **subpath** (`/proxy/4002/`). You must start with **`npm run 
 
 ## Local PC (optional)
 
-- In root **`.env`:** `VITE_API_URL=http://localhost:4001` when you use Docker on your computer with the UI on port **4002** and the API on **4001**.
+- In root **`.env`:** `VITE_API_URL=http://localhost:4001` when you use Docker on your computer with the UI on port **4003** and the API on **4001**.

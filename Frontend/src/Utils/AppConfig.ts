@@ -1,4 +1,4 @@
-// Base URL: explicit VITE_API_URL, or same origin (nginx + Cloudflare tunnel), or local docker on :4002 → API on :4001.
+// Base URL: explicit VITE_API_URL, or same origin (nginx + Cloudflare tunnel), or direct Docker Vite on :4002/:4003 → API :4001.
 function resolveBaseUrl(): string {
     const fromEnv = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
     if (fromEnv) {
@@ -8,8 +8,8 @@ function resolveBaseUrl(): string {
         return "http://localhost:4001";
     }
     const { protocol, hostname, port } = window.location;
-    // Docker maps UI to host :4002 and API to :4001 (no path proxy).
-    if (port === "4002") {
+    // Docker publishes Vite on host :4003 (4002 is for code-server /proxy/4002/); API on :4001.
+    if (port === "4002" || port === "4003") {
         return `${protocol}//${hostname}:4001`;
     }
     // Nginx, tunnel (trycloudflare.com), or :80 / :5002 — /api is same host.
