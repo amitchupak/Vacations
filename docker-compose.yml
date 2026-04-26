@@ -12,61 +12,42 @@ services:
       # Persist MongoDB data automatically on the host (no manual sync script needed).
       - ./Database/mongo-data:/data/db
   
-  mongo-sync:
+  # Seeds Mongo from Database/vacations.*.json on first boot (idempotent: skips if data exists).
+  mongo-seed:
     image: mongo:latest
-    container_name: vacations_mongo_sync
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    container_name: vacations_mongo_seed
     depends_on:
       - mongo
+    volumes:
+      - ./Database:/seed:ro
     entrypoint:
       - /bin/sh
       - -c
       - |
         set -eu
-        HOST_URI='mongodb://host.docker.internal:27017/vacations'
-        DOCKER_URI='mongodb://mongo:27017/vacations'
-        ARCHIVE='/tmp/vacations.archive'
+        URI='mongodb://mongo:27017/vacations'
 
-        echo '[mongo-sync] Waiting for Docker MongoDB...'
-        READY=0
+        echo '[mongo-seed] Waiting for Docker MongoDB...'
         for i in $$(seq 1 30); do
-          if mongosh "$$DOCKER_URI" --quiet --eval "db.runCommand({ ping: 1 }).ok" >/dev/null 2>&1; then
-            READY=1
+          if mongosh "$$URI" --quiet --eval "db.runCommand({ ping: 1 }).ok" >/dev/null 2>&1; then
             break
           fi
           sleep 1
         done
 
-        if [ "$$READY" != "1" ]; then
-          echo '[mongo-sync] Docker MongoDB not reachable yet. Skipping seed sync.'
+        USERS=$$(mongosh "$$URI" --quiet --eval "db.users.countDocuments()" 2>/dev/null | tr -dc '0-9')
+        if [ -n "$$USERS" ] && [ "$$USERS" != "0" ]; then
+          echo "[mongo-seed] users collection already has $$USERS docs. Skipping."
           exit 0
         fi
 
-        echo '[mongo-sync] Checking Docker vacations database state...'
-        DOCKER_COLLECTIONS="$$(mongosh "$$DOCKER_URI" --quiet --eval "db.getCollectionNames().length" 2>/dev/null | tr -dc '0-9')"
-        if [ -n "$$DOCKER_COLLECTIONS" ] && [ "$$DOCKER_COLLECTIONS" != "0" ]; then
-          echo '[mongo-sync] Docker vacations database already has data. Skipping seed sync.'
-          exit 0
-        fi
-
-        echo '[mongo-sync] Checking host MongoDB availability...'
-        if ! mongosh "$$HOST_URI" --quiet --eval "db.runCommand({ ping: 1 }).ok" >/dev/null 2>&1; then
-          echo '[mongo-sync] Host MongoDB not reachable at host.docker.internal:27017. Skipping sync.'
-          exit 0
-        fi
-
-        HOST_COLLECTIONS="$$(mongosh "$$HOST_URI" --quiet --eval "db.getCollectionNames().length" 2>/dev/null | tr -dc '0-9')"
-        if [ -z "$$HOST_COLLECTIONS" ] || [ "$$HOST_COLLECTIONS" = "0" ]; then
-          echo '[mongo-sync] Host vacations database is empty. Skipping sync.'
-          exit 0
-        fi
-
-        echo '[mongo-sync] Exporting host vacations database...'
-        mongodump --uri="$$HOST_URI" --archive="$$ARCHIVE" --gzip >/dev/null
-        echo '[mongo-sync] Restoring into Docker vacations database...'
-        mongorestore --uri="$$DOCKER_URI" --drop --archive="$$ARCHIVE" --gzip >/dev/null
-        echo '[mongo-sync] Sync completed successfully.'
+        echo '[mongo-seed] Importing users...'
+        mongoimport --uri="$$URI" --collection=users     --file=/seed/vacations.users.json     --jsonArray --drop
+        echo '[mongo-seed] Importing vacations...'
+        mongoimport --uri="$$URI" --collection=vacations --file=/seed/vacations.vacations.json --jsonArray --drop
+        echo '[mongo-seed] Importing likes...'
+        mongoimport --uri="$$URI" --collection=likes     --file=/seed/vacations.likes.json     --jsonArray --drop
+        echo '[mongo-seed] Done.'
     restart: "no"
 
   backend:
@@ -74,13 +55,15 @@ services:
       context: .
       dockerfile: ./Backend/Dockerfile
     container_name: vacations_backend
+    # Defaults match Backend/.env so seeded users (hashed with these values) can log in.
+    # Override per-environment via root .env (JWT_SECRET=..., HASH_SALT=...) if you want.
     environment:
       MONGODB_CONNECTION_STRING: mongodb://mongo:27017/vacations
       PORT: "4001"
       ENVIRONMENT: development
       NODE_ENV: development
-      JWT_SECRET: ${JWT_SECRET:-}
-      HASH_SALT: ${HASH_SALT:-}
+      JWT_SECRET: ${JWT_SECRET:-neon-dragon_🚀_midnight-cipher__vault42__cosmicEntropy__jwtPowerCore__9fA7xKQwLZpR8M2eT0VhS}
+      HASH_SALT: ${HASH_SALT:-TheAmazing45800-3Students}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
     ports:
       - "4001:4001"
