@@ -12,6 +12,26 @@
 
 If you use **SSH** instead, you will see a prompt like `ubuntu@ip-172-31-33-42` — that is **normal**. `172.31.x.x` is the **private** IP inside AWS; the **public** IP you use in a browser is still **34.244.57.210**.
 
+### Node.js version (if `npm start` throws `SyntaxError: Unexpected token '.'` in Vite)
+
+The **Frontend** needs **Node 20+** (Vite 7). The school VM may have an old system Node.
+
+Check: `node -v` (must be v20.19 or higher, e.g. v20.x or v22.x). If it is **v12** or **v18** or lower, install a modern Node **in your home directory** (does not need `sudo`):
+
+```bash
+# Install nvm, then Node 20 LTS
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+# Close and reopen the terminal, or:  source ~/.bashrc
+nvm install 20
+nvm use 20
+node -v
+cd ~/Vacations/Frontend
+npm install
+npm start
+```
+
+**Easier (no nvm):** use **Docker** from the project root: `docker compose up -d --build` — the project’s Docker image already uses a current Node.
+
 ---
 
 ## B — Open your site with `http://34.244.57.210:5002`
