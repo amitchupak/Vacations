@@ -125,6 +125,14 @@ cd ~/Vacations/Frontend && npm run start:code-server
 **Or** keep Docker running and use a different preview port: `npm run start:code-server:4003` and open **`http://<IP>:5001/proxy/4003/`** (not `/proxy/4002/`).
 - **Or use full stack:** from the project root, `docker compose up -d --build` and open **`http://<IP>:5002`**, not the `/proxy/4002/` link.
 
+## If the URL is `/proxy/4002/proxy/4002/` (path appears twice)
+
+That **breaks** Vite. Use a **single** segment only:
+
+`http://<IP>:5001/proxy/4002/`
+
+`index.html` will auto-redirect if it detects the duplicate. After pull, use that address or it will self-fix on reload.
+
 ## Code-server: 404 on `client`, `main.tsx`, `@react-refresh`
 
 The preview uses a **subpath** (`/proxy/4002/`). You must start with **`npm run start:code-server`**, not `npm start`. For a public site without that path, use **`http://<IP>:5002`** (Docker) or the **trycloudflare.com** link.

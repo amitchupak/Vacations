@@ -4,6 +4,15 @@ import { Layout } from "./Components/Layout/Layout";
 import { interceptor } from "./Utils/Interceptor";
 import "./index.css";
 
+// If the address bar has /proxy/4002/proxy/4002/ (duplicate path), Vite 404s. Collapse to one segment.
+if (import.meta.env.DEV && typeof location !== "undefined") {
+    const path = location.pathname;
+    const fixed = path.replace(/(\/proxy\/\d+)(?:\1)+/g, "$1");
+    if (fixed !== path) {
+        history.replaceState(null, "", fixed + location.search + location.hash);
+    }
+}
+
 // Set up axios so it auto-attaches the login token to every request.
 interceptor.create();
 
