@@ -1,3 +1,21 @@
+// Base URL: explicit VITE_API_URL, or same origin (nginx + Cloudflare tunnel), or local docker on :4002 → API on :4001.
+function resolveBaseUrl(): string {
+    const fromEnv = (import.meta.env.VITE_API_URL as string | undefined)?.trim();
+    if (fromEnv) {
+        return fromEnv.replace(/\/$/, "");
+    }
+    if (typeof window === "undefined") {
+        return "http://localhost:4001";
+    }
+    const { protocol, hostname, port } = window.location;
+    // Docker maps UI to host :4002 and API to :4001 (no path proxy).
+    if (port === "4002") {
+        return `${protocol}//${hostname}:4001`;
+    }
+    // Nginx, tunnel (trycloudflare.com), or :80 / :5002 — /api is same host.
+    return window.location.origin;
+}
+
 // All the URLs and settings the frontend needs in one place.
 class AppConfig {
 
@@ -6,8 +24,8 @@ class AppConfig {
     public readonly isDevelopment = this.environment === "development";
     public readonly isProduction = this.environment === "production";
 
-    // Base server address. Comes from .env (VITE_API_URL) or falls back to localhost.
-    public readonly baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:4001").trim().replace(/\/$/, "");
+    // See resolveBaseUrl — omit VITE_API_URL when using the Cloudflare tunnel in Docker.
+    public readonly baseUrl = resolveBaseUrl();
     public readonly serverUrl = `${this.baseUrl}/api`;
 
     // Where uploaded vacation images live.

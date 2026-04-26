@@ -1,3 +1,5 @@
+# Course server: public IP 34.244.57.210 | terminal :5000 | VS Code :5001
+# See AWS-SETUP.md for how to start the app and open it in a browser.
 services:
   mongo:
     image: mongo:latest
@@ -107,8 +109,37 @@ services:
       - ./Frontend:/app
       - /app/node_modules
       - /app/dist
+    # VITE_DEV_PORT=4000 inside the container (host :4002 maps to container :4000).
+    # Empty = use browser location (Cloudflare tunnel + local nginx on :5002). For AWS option B, set in root .env.
     environment:
-      - VITE_API_URL=http://localhost:4001
+      VITE_API_URL: ${VITE_API_URL:-}
+      VITE_DEV_PORT: "4000"
+
+  # Public entry. AWS often blocks 80/8080/40xx/5002. Use cloudflared (below) for a real public URL.
+  proxy:
+    image: nginx:alpine
+    container_name: vacations_proxy
+    ports:
+      - "80:80"
+      - "8080:80"
+      - "5002:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+  # Outbound-only tunnel — works even when inbound HTTP is blocked. After `docker compose up -d`, run:
+  #   docker compose logs cloudflared
+  # and open the printed https://....trycloudflare.com URL. No extra AWS port rules needed.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: vacations_cloudflared
+    command: tunnel --no-autoupdate --url http://proxy:80
+    depends_on:
+      - proxy
+    restart: on-failure
 
 volumes:
   backend_assets:

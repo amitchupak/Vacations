@@ -9,8 +9,9 @@ interceptor.create();
 
 // Mount the React app into <div id="root"> in index.html.
 // BrowserRouter gives us URL-based routing.
+// Matches Vite `base` (e.g. /proxy/4002/ when using code-server preview) via import.meta.env.BASE_URL
 createRoot(document.getElementById("root")!).render(
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "") || undefined}>
         <Layout />
     </BrowserRouter>
 );

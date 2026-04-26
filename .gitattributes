@@ -1,0 +1,14 @@
+# Normalize line endings so Windows/Mac/Linux all behave the same in Git.
+# (Stops the flood of "LF will be replaced by CRLF" messages on Windows.)
+* text=auto eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binary files: never line-normalize
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.pdf binary
